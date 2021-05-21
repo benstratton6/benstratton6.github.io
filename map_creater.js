@@ -247,7 +247,7 @@ console.log(numCommunitesToPlot);
 for (let i=0; i<numCommunitesToPlot; i++) { 
   let currentCommunity = communityData[communitesToPlot[i]]
   let community = new AddCommunities(currentCommunity["points"], currentCommunity["routes"], currentCommunity["stats"])
-  setTimeout(function() { return null } , 500);
+  setTimeout(function() { return null } , 5000);
   console.log("Finidhed time out"); 
   let communityLayer = community.getFullLayer;
   healthFacalityArr.push(communityLayer); 
