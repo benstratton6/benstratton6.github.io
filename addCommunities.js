@@ -226,7 +226,8 @@ class AddCommunities {
         // creates the style layer for the points and stores in a accesable varibale
         
         const routeDistances = this.routeDistances; 
-        console.log(routeDistance); 
+        console.log("HERE"); 
+        console.log(routeDistances); 
         const allStats = this.statsData; 
         const allStatsKeys = Object.keys(allStats); 
         const text = this.textFromatterOutreach; 
