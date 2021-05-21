@@ -226,6 +226,7 @@ class AddCommunities {
         // creates the style layer for the points and stores in a accesable varibale
         
         const routeDistances = this.routeDistances; 
+        console.log(routeDistance); 
         const allStats = this.statsData; 
         const allStatsKeys = Object.keys(allStats); 
         const text = this.textFromatterOutreach; 
@@ -242,6 +243,7 @@ class AddCommunities {
 
 
         var distanceFromRHP = routeDistances[nameSplit[0]]; 
+        console.log(distanceFromRHP); 
         //console.log("name :" + name); 
         //console.log("letters :" + letters); 
         //console.log("routes : " + this.routeDistances);
