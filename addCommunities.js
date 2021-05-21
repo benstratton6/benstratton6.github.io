@@ -251,7 +251,7 @@ class AddCommunities {
         //console.log("Distances: " + this.routeDistances); 
 
         if (nameSplit[1] === "RHP") {
-
+            console.log("made it here"); 
             if (allStatsKeys.includes(name)) { 
                 layer.bindTooltip(textRHP(name, allStats[name]), {className : "toolTipsRHC"})
             }
