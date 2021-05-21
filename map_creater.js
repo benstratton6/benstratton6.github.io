@@ -246,8 +246,10 @@ console.log(numCommunitesToPlot);
 
 for (let i=0; i<numCommunitesToPlot; i++) { 
   let currentCommunity = communityData[communitesToPlot[i]]
-  let community = new AddCommunities(currentCommunity["points"], currentCommunity["routes"], currentCommunity["stats"]).getFullLayer;
-  healthFacalityArr.push(community); 
+  let community = new AddCommunities(currentCommunity["points"], currentCommunity["routes"], currentCommunity["stats"])
+  setTimeout(null, 500); 
+  let communityLayer = community.getFullLayer;
+  healthFacalityArr.push(communityLayer); 
 }
 
 console.log(healthFacalityArr); 
