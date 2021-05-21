@@ -245,7 +245,7 @@ class AddCommunities {
 
         var distanceFromRHP = routeDistances[nameSplit[0]]; 
         console.log("Inside onEachFunction);
-        console.log(distanceFromRHP); 
+        console.log("Distance from RHP: " + distanceFromRHP); 
         //console.log("name :" + name); 
         //console.log("letters :" + letters); 
         //console.log("routes : " + this.routeDistances);
