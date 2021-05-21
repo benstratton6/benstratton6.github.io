@@ -261,16 +261,18 @@ class AddCommunities {
         }
         else {
           if (typeof distanceFromRHP === "number" && allStatsKeys.includes(name)) {
-             
+            console.log(1); 
             const roundedDistance = Math.floor(distanceFromRHP/100) / 10;
             layer.bindTooltip(text(name, roundedDistance, allStats[name]), {className : "toolTipsRHC"}); 
 
           }
           else if (typeof distanceFromRHP === "number") {
+              console.log(2); 
             const roundedDistance = Math.floor(distanceFromRHP/100) / 10;
             layer.bindTooltip(text(name, roundedDistance, {}), {className : "toolTipsRHC"}); 
           } 
           else {
+              console.log(3); 
                layer.bindTooltip(`<font id=nameStyle> ${name} </font>`, {className : "toolTipsRHC"});
           }
         }}
