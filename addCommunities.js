@@ -151,7 +151,8 @@ class AddCommunities {
 
           }       
           })
-
+        console.log("inside routeStyleLayerCreation"); 
+        console.log(distances); 
         this.routeDistances = distances; 
         this.routeStyleLayer = routesStyleLayer; 
         //console.log(routesStyleLayer.getBounds());
@@ -226,6 +227,7 @@ class AddCommunities {
         // creates the style layer for the points and stores in a accesable varibale
         
         const routeDistances = this.routeDistances; 
+        console.log(this.routeDistances);
         console.log("HERE"); 
         console.log(routeDistances); 
         console.log(routeDistances["Chilikwazi"]);
