@@ -230,7 +230,9 @@ class AddCommunities {
         console.log(this.routeDistances);
         console.log("HERE"); 
         console.log(routeDistances); 
-        console.log(routeDistances["Chilikwazi"]);
+        console.log("Distance to Chilikwazi is: " + routeDistances["Chilikwazi"]);
+        console.log("keys are: ");
+        console.log(Object.keys(routeDistances)); 
         const allStats = this.statsData; 
         const allStatsKeys = Object.keys(allStats); 
         const text = this.textFromatterOutreach; 
