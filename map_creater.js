@@ -385,7 +385,7 @@ var options = {
 
 $( document ).ready(function() { 
 L.control.groupedLayers(baseMaps, markersGrouped, options).addTo(map);
- console.log("PLEASE WORK!!!);
+ console.log("PLEASE WORK!!!");
 }); 
 
 
