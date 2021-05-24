@@ -383,9 +383,12 @@ var options = {
   collapsed : false
 };
 
-$( document ).ready(function() { 
-L.control.groupedLayers(baseMaps, markersGrouped, options).addTo(map);
- console.log("PLEASE WORK!!!");
+var test = L.control.groupedLayers(baseMaps, markersGrouped, options)
+
+$( document ).ready(function() {
+
+ test.addTo(map);
+ 
 }); 
 
 
