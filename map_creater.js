@@ -383,14 +383,14 @@ var options = {
   collapsed : false
 };
 
-var test = L.control.groupedLayers(baseMaps, markersGrouped, options)
-
+L.control.groupedLayers(baseMaps, markersGrouped, options).addTo(map);
+/*
 $( document ).ready(function() {
 
  test.addTo(map);
  
 }); 
-
+*/
 
 
 
