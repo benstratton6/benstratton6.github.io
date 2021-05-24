@@ -173,6 +173,8 @@ class AddCommunities {
         //console.log("DISTACES: " + JSON.stringify(this.routeDistances));
         //console.log(routeLayer._layers);
         this.completeRouteLayer = routeLayer;
+        
+        return 0; 
 
     }
 
@@ -311,9 +313,10 @@ class AddCommunities {
     completeLayer() {
         // calls all the functions to create the complete layer 
 
-        this.routeLayer(); 
-        //setTimeout(10); 
-        this.pointsLayer(); 
+        if (this.routeLayer() === 0) { 
+            //setTimeout(10); 
+            this.pointsLayer(); 
+        }; 
         
         //const my_bounds = this.routeLayer.getBounds()
         //console.log(my_bounds);
