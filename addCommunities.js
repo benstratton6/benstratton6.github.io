@@ -46,10 +46,11 @@ class AddCommunities {
   
   
   
-  constructor(pointsData, routesData, statsData) { 
+  constructor(pointsData, routesData, statsData, URLData) { 
         this.pointsData = pointsData;
         this.routesData = routesData;
         this.statsData = statsData; 
+        this.URLData = URLData; 
         
         // style layers to go with the omnivore layers 
         this.pointsStyleLayer; 
@@ -89,6 +90,7 @@ class AddCommunities {
         return this.routesData; 
     }
     */ 
+
     get getFullLayer() { 
         return this.fullLayer; 
     }
@@ -102,7 +104,7 @@ class AddCommunities {
         // creates a random hex colour to be used on a route 
 
         let hexColor = "#" + Math.floor(Math.random() * 16777215).toString(16); 
-        console.log(typeof hexColor)
+        //console.log(typeof hexColor)
         return hexColor; 
     }
 
@@ -148,20 +150,22 @@ class AddCommunities {
               const name = feature.properties.name.split(" ")[2];
               distances[name] = routeLength; 
               //layer.bindTooltip(feature.properties.name);   
-
+            
           }       
           })
-        console.log("inside routeStyleLayerCreation"); 
-        console.log(distances); 
+
+
         this.routeDistances = distances; 
         this.routeStyleLayer = routesStyleLayer; 
         //console.log(routesStyleLayer.getBounds());
+ 
         
     }
 
     routeLayer() { 
         // creates the complete layer, combining the data with the style and is then ready to add to the map
-        this.createRouteStyleLayer(); 
+        
+        this.createRouteStyleLayer()
 
         //const routeLayer = omnivore.gpx(this.routesData, null, this.routeStyleLayer)
         const routeLayer = omnivore.gpx(this.routesData, null, this.routeStyleLayer)
@@ -172,9 +176,11 @@ class AddCommunities {
         //console.log(this.routeStyleLayer); 
         //console.log("DISTACES: " + JSON.stringify(this.routeDistances));
         //console.log(routeLayer._layers);
+
+
         this.completeRouteLayer = routeLayer;
         
-        return 0; 
+        
 
     }
 
@@ -182,7 +188,7 @@ class AddCommunities {
     // -------------------- POINTS LAYER CREATION -----------------
     // #############################################################
 
-    pointTOLayerPoints(feature, latlng) { 
+    pointTOLayerPoints(feature, latlng, url) { 
         // checks if the point is a RHP and gives the correct ICON
         
         var name = feature.properties.name
@@ -191,14 +197,28 @@ class AddCommunities {
         //console.log(letters)
 
         if (letters === "RHP") {
-            return L.marker(latlng, {icon : ruralHealthPostIcon});
-        }
 
+            let currentIcon = L.marker(latlng, {icon : ruralHealthPostIcon}); 
+            
+            console.log(`URL: + ${url}`); 
+            console.log(typeof url); 
+            if (typeof url === "string") {
+                console.log("HERE WE ARE!!");
+                currentIcon.on('click', function(e) { 
+                    window.open(url);
+                    //window.open("https://www.oncallafrica.org/kanyanga-rural-health-post");  
+                }); 
+            } 
+            //return L.marker(latlng, {icon : ruralHealthPostIcon}); 
+            
+            return currentIcon; 
+        }
+        
         return L.marker(latlng, {icon : outReachPostIcon});
         
     } 
 
-    textFromatterRHP(name, stats) { 
+    textFromatterRHP(name, stats, url) { 
         const keys = Object.keys(stats); 
         const lengthKeys = keys.length; 
 
@@ -208,6 +228,11 @@ class AddCommunities {
 
             output += `<br>${keys[i]}: <font id=values>${stats[keys[i]].toString()}</font>`; 
         }
+
+        if (typeof url === "string") {
+            output += `<br> (Click for more information)`
+        }
+
         return output;
     }
 
@@ -229,18 +254,21 @@ class AddCommunities {
         // creates the style layer for the points and stores in a accesable varibale
         
         const routeDistances = this.routeDistances; 
-        console.log(this.routeDistances);
-        console.log("HERE"); 
-        console.log(routeDistances); 
-        console.log("Distance to Chilikwazi is: " + routeDistances["Chilikwazi"]);
-        console.log("keys are: ");
-        console.log(Object.keys(routeDistances)); 
         const allStats = this.statsData; 
         const allStatsKeys = Object.keys(allStats); 
         const text = this.textFromatterOutreach; 
         const textRHP = this.textFromatterRHP; 
+        const URL = this.URLData; 
+        const pointsToLayer = this.pointTOLayerPoints; 
 
-        const pointsStyleLayer = L.geoJson(null, {pointToLayer: this.pointTOLayerPoints,
+        console.log("Distances : "); 
+        console.log(routeDistances); 
+        console.log(Object.keys(routeDistances)); 
+
+
+        const pointsStyleLayer = L.geoJson(null, {pointToLayer: function(feature, latlng) {
+            return pointsToLayer(feature, latlng, URL); 
+        }, 
         
         onEachFeature : function(feature, layer) {
         
@@ -251,17 +279,19 @@ class AddCommunities {
 
 
         var distanceFromRHP = routeDistances[nameSplit[0]]; 
-        console.log("Inside onEachFunction");
-        console.log("DistanceFromRHP : " + distanceFromRHP);
+
+        console.log("name: " + name); 
+        console.log("Distance : " + routeDistances[name])
+
         //console.log("name :" + name); 
         //console.log("letters :" + letters); 
         //console.log("routes : " + this.routeDistances);
         //console.log("Distances: " + this.routeDistances); 
 
         if (nameSplit[1] === "RHP") {
-            console.log("made it here"); 
+
             if (allStatsKeys.includes(name)) { 
-                layer.bindTooltip(textRHP(name, allStats[name]), {className : "toolTipsRHC"})
+                layer.bindTooltip(textRHP(name, allStats[name], URL), {className : "toolTipsRHC"})
             }
             else { 
                 layer.bindTooltip(`<font id = "RHCStyle"> ${name} </font>`) // + feature.properties.notes);
@@ -269,18 +299,16 @@ class AddCommunities {
         }
         else {
           if (typeof distanceFromRHP === "number" && allStatsKeys.includes(name)) {
-            console.log(1); 
+             
             const roundedDistance = Math.floor(distanceFromRHP/100) / 10;
             layer.bindTooltip(text(name, roundedDistance, allStats[name]), {className : "toolTipsRHC"}); 
 
           }
           else if (typeof distanceFromRHP === "number") {
-              console.log(2); 
             const roundedDistance = Math.floor(distanceFromRHP/100) / 10;
             layer.bindTooltip(text(name, roundedDistance, {}), {className : "toolTipsRHC"}); 
           } 
           else {
-              console.log(3); 
                layer.bindTooltip(`<font id=nameStyle> ${name} </font>`, {className : "toolTipsRHC"});
           }
         }}
@@ -297,7 +325,7 @@ class AddCommunities {
 
         this.completePointsLayer = pointsLayer; 
 
-        console.log(pointsLayer);
+        //console.log(pointsLayer);
 
     }
     
@@ -313,11 +341,12 @@ class AddCommunities {
     completeLayer() {
         // calls all the functions to create the complete layer 
 
-        if (this.routeLayer() === 0) { 
-            //setTimeout(10); 
-            this.pointsLayer(); 
-        }; 
+        // try putting a promise in here that resolves to the points layer being created 
         
+        this.routeLayer();
+        
+        this.pointsLayer(); 
+
         //const my_bounds = this.routeLayer.getBounds()
         //console.log(my_bounds);
 
