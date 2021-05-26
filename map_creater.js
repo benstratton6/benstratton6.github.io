@@ -32,12 +32,13 @@ map.options.maxZoom = 15;
 
 
 const standardMapIcon = new L.icon({
-  iconUrl: "./Icons/On Call Africa_Logo.png",
+  //iconUrl: "./Icons/On Call Africa_Logo.png",
+  iconUrl : "Icons/map-marker-icon_34392.png", 
   
-  iconSize:     [80, 40], // size of the icon
+  iconSize:     [50, 50], // size of the icon
   shadowSize:   [100, 100], // size of the shadow
-  iconAnchor:   [0, 40],
-  popupAnchor:  [40, -40],
+  iconAnchor:   [15, 50],
+  popupAnchor:  [9, -40],
 }) 
 
 const ruralHealthPostIcon = new L.icon({
@@ -46,13 +47,14 @@ const ruralHealthPostIcon = new L.icon({
   iconSize:     [40, 40], // size of the icon
   shadowSize:   [100, 100], // size of the shadow
   iconAnchor:   [20, 40],
-  popupAnchor:  [-0, -40]
+  popupAnchor:  [-0, -40],
   
 }) 
 
 const outReachPostIcon = new L.icon({
   iconUrl: "./Icons/outreachposticon.png",
-  
+  //iconUrl : "./Icons/icons8-plus-30.png", 
+
   iconSize:     [40, 40], // size of the icon
   shadowSize:   [100, 100], // size of the shadow
   iconAnchor:   [20, 30],
@@ -138,7 +140,7 @@ onEachFeature : function(feature, layer) {
   layer.bindTooltip(feature.properties.name, {className : "toolTipsRHC"});
 }}); 
 
-const western = L.geoJson(westernProvinceData, {style : ProvinceStyle("grey", 5), 
+const western = L.geoJson(westernProvinceData, {style : ProvinceStyle("#535353", 5), 
 onEachFeature : function(feature, layer) {
   layer.bindTooltip(feature.properties.name, {className : "toolTipsRHC"});
 }}); 
@@ -177,14 +179,19 @@ function styleDynamic(name, dataObj, colourBorder, colourFill) {
   
 }
 
-function onEachDynamic(name, dataObj) {
-  const dataArr = Object.keys(dataObj); 
+function onEachDynamic(layer, name, dataObj, url) {
+  const dataArr = Object.keys(dataObj);  
   if (dataArr.includes(name)) {
+    if (typeof url === "string") {
+      layer.on('click', function() {
+        window.open(url)
+      })
+    }
     const message = `<br><font id="values"> OCA began working here in ` + dataObj[name].toString();
-    return name + message;
+    return [name + message, {className : "toolTipsRHC", sticky : true, offset : L.point(100, 100)}];
   }
   else {
-    return name;
+    return [name, {className : "toolTipsRHC"}];
   }
 }
 
@@ -193,21 +200,22 @@ function onEachDynamic(name, dataObj) {
 // -------------------------- WASH -----------------------------
 // ##############################################################
 
-//washDistricts = ["Kazungula", "Mwandi", "Sesheke"]; 
-
+washLinkURL = null; 
 
 const southernWASH = L.geoJSON(southernProvinceData, {style : function(feature) {
   return styleDynamic(feature.properties.name, washDistricts, "#000000", "#4fe2ff")
 }, 
 onEachFeature : function(feature, layer) { 
-  layer.bindTooltip(onEachDynamic(feature.properties.name, washDistricts), {className : "toolTipsRHC"}); 
+  const message = onEachDynamic(layer, feature.properties.name, washDistricts, washLinkURL)
+  layer.bindTooltip(message[0], message[1]); 
 }}); 
 
 const westernWASH = L.geoJson(westernProvinceData, {style : function(feature) {
-  return styleDynamic(feature.properties.name, washDistricts, "#000000", "#4fe2ff")
+  return styleDynamic(feature.properties.name, washDistricts, "#535353", "#4fe2ff")
 }, 
 onEachFeature : function(feature, layer) {
-  layer.bindTooltip(onEachDynamic(feature.properties.name, washDistricts), {className : "toolTipsRHC"}); 
+  const message = onEachDynamic(layer, feature.properties.name, washDistricts, washLinkURL);
+  layer.bindTooltip(message[0], message[1]); 
 }}); 
 
 
@@ -218,20 +226,22 @@ washLayer = layerGroupMaker(washLayerArr);
 // -------------------- HEALTH FACALITY -------------------------
 // ##############################################################
 
-//healthFacalityDistricts = ["Zimba", "Kazungula"]
+healthFacalityURL = null; 
 
 const southernHealthFaclity = L.geoJSON(southernProvinceData, {style : function(feature) {
   return styleDynamic(feature.properties.name, healthFacalityDistricts, "#000000", "#f95c5c")
 }, 
 onEachFeature : function(feature, layer) { 
-  layer.bindTooltip(onEachDynamic(feature.properties.name, healthFacalityDistricts), {className : "toolTipsRHC"}); 
+  const message = onEachDynamic(layer, feature.properties.name, healthFacalityDistricts, healthFacalityURL)
+  layer.bindTooltip(message[0], message[1]); 
 }})
 
 const westernHealthFaclity = L.geoJSON(westernProvinceData, {style : function(feature) {
-  return styleDynamic(feature.properties.name, healthFacalityDistricts, "#000000", "#f95c5c")
+  return styleDynamic(feature.properties.name, healthFacalityDistricts, "#535353", "#f95c5c")
 }, 
 onEachFeature : function(feature, layer) {
-  layer.bindTooltip(onEachDynamic(feature.properties.name, healthFacalityDistricts), {className : "toolTipsRHC"}); 
+  const message = onEachDynamic(layer, feature.properties.name, healthFacalityDistricts, healthFacalityURL)
+  layer.bindTooltip(message[0], message[1]); 
 }})
 
 healthFacalityArr = [southernHealthFaclity, westernHealthFaclity]; 
@@ -246,22 +256,10 @@ console.log(numCommunitesToPlot);
 
 for (let i=0; i<numCommunitesToPlot; i++) { 
   let currentCommunity = communityData[communitesToPlot[i]]
-  let community = new AddCommunities(currentCommunity["points"], currentCommunity["routes"], currentCommunity["stats"])
-  //setTimeout(function() { return null } , 5000);
-  console.log("Finidhed time out"); 
-  let communityLayer = community.getFullLayer;
-  healthFacalityArr.push(communityLayer); 
+  let community = new AddCommunities(currentCommunity["points"], currentCommunity["routes"], currentCommunity["stats"], currentCommunity["URL"]).getFullLayer;
+  console.log(currentCommunity["URL"]); 
+  healthFacalityArr.push(community); 
 }
-
-console.log(healthFacalityArr); 
-
-/*
-kanyangaOutreachPosts = "./kanyanga/kanyangaOutreachPosts.gpx";
-kanyangaRoutesGPX = "./kanyanga/kanyangaRoutes.gpx";
-
-var community = new AddCommunities(kanyangaOutreachPosts, kanyangaRoutesGPX, KanyangaStatsData).getFullLayer; 
-*/ 
-
 
 healthFacalityLayer = layerGroupMaker(healthFacalityArr);
 
@@ -269,20 +267,22 @@ healthFacalityLayer = layerGroupMaker(healthFacalityArr);
 // ------------------- Digital Health -------------------------
 // ##############################################################
 
-//digitalHealthdistricts = ["Livingstone", "Kazungula"]
+digitalHealthURL = null; 
 
 const southernDigitalHealth = L.geoJSON(southernProvinceData, {style : function(feature) {
   return styleDynamic(feature.properties.name, digitalHealthdistricts, "#000000", "#e1ff21")
 }, 
 onEachFeature : function(feature, layer) {
-  layer.bindTooltip(onEachDynamic(feature.properties.name, digitalHealthdistricts), {className : "toolTipsRHC"}); 
+  const message = onEachDynamic(layer, feature.properties.name, digitalHealthdistricts, digitalHealthURL)
+  layer.bindTooltip(message[0], message[1]); 
 }})
 
 const westernDigitalHealth = L.geoJSON(westernProvinceData, {style : function(feature) {
-  return styleDynamic(feature.properties.name, digitalHealthdistricts, "#000000", "#e1ff21")
+  return styleDynamic(feature.properties.name, digitalHealthdistricts, "#535353", "#e1ff21")
 }, 
 onEachFeature : function(feature, layer) {
-  layer.bindTooltip(onEachDynamic(feature.properties.name, digitalHealthdistricts), {className : "toolTipsRHC"}); 
+  const message = onEachDynamic(layer, feature.properties.name, digitalHealthdistricts, digitalHealthURL)
+  layer.bindTooltip(message[0], message[1]); 
 }})
 
 
@@ -313,7 +313,7 @@ var OCA_HQ_location = {
 
 const OCAMarker = L.geoJSON(OCA_HQ_location, { pointToLayer: function(feature, latlng) {
   return L.marker(latlng, {icon : standardMapIcon}); 
-} } ).bindPopup(OCA_HQ_location.features[0].properties.name, {'className' : "OCAMarker"}).addTo(map).openPopup(); 
+} } ).bindPopup(`<img id="image" src="Icons/On Call Africa_Logo.png"> <br> ${OCA_HQ_location.features[0].properties.name}`, {'className' : "OCAMarker"}).addTo(map).openPopup(); 
 
 
 // #############################################################
@@ -324,7 +324,7 @@ const OCAMarker = L.geoJSON(OCA_HQ_location, { pointToLayer: function(feature, l
 //map.fitBounds(community.getBounds());
 
 
-var baseMaps = [{ 
+const baseMaps = [{ 
     groupName : "Base Maps",
     layers : {
       "Street View" : street_view, 
@@ -333,64 +333,49 @@ var baseMaps = [{
     }
 }];
 
-/*
-var markers = { 
-  //"kOCA" : OCAMarker,
-  "Kanyanga" : community,
-  //"Western Districts" : districts,
-  "Western" : westernProvience,
-  "Southern" : southernProvinces
-};
-
-var marker2 = {
-  "WASH" : washLayer,
-  "Health Facality Improvment" : healthFacalityLayer,
-  "Digital Health" : digitalHealthLayer
-}
-*/
-
-// L.control.layers(baseMaps, markers, {collapsed : false}).addTo(map);
-
-//$(".leaflet-control-layers-overlays").prepend("<label>Provinces</label>");
-
-
-
-var markersGrouped = [ 
+const markersGrouped = [ 
   {
     groupName : "Provinces", 
     expanded : false, 
+    exclusive : false,
     layers : {
       "Southern" : southernProvinces, 
       "Western" : westernProvience
     }
-  },
-  {
-    groupName : "Programs", 
-    expanded : true, 
-    layers : {
-      "Model Package for HCF" : healthFacalityLayer,
-      "WASH In HCF" : washLayer,
-      "Digital Health" : digitalHealthLayer
-    }
   }
 ]
 
-var options = {
+
+nullLayer = L.layerGroup([]);
+
+const programs = [{
+  groupName : "Programs", 
+  expanded : true, 
+  exclusive : false, 
+  layers : {
+    "Model Package for HCF" : healthFacalityLayer,
+    "WASH In HCF" : washLayer,
+    "Digital Health" : digitalHealthLayer, 
+    "CLEAR" : nullLayer
+  }
+}
+]
+
+const options = {
   container_width 	: "300px",
   container_maxHeight : "350px", 
   group_maxHeight     : "100px",
   exclusive       	: false,
-  collapsed : false
+  collapsed : false,
 };
 
-L.control.groupedLayers(baseMaps, markersGrouped, options).addTo(map);
-/*
-$( document ).ready(function() {
 
- test.addTo(map);
- 
-}); 
-*/
+
+// for base layers and other non program related layers
+lcontrol = L.control.groupedLayers(baseMaps, markersGrouped, options).addTo(map);
+
+// for program layers only 
+lcontrol2 = L.control.groupedLayers(programs, null, options).addTo(map);
 
 
 

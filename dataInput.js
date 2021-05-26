@@ -70,7 +70,8 @@ KanyangaStatsData = {
 KanyangaData = {
     "points" : "./kanyanga/kanyangaOutreachPosts.gpx",
     "routes" : "./kanyanga/kanyangaRoutes.gpx",
-    "stats" : KanyangaStatsData
+    "stats" : KanyangaStatsData,
+    "URL" : "https://www.oncallafrica.org/kanyanga-rural-health-post"
 }
 
 communityData = {
