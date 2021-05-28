@@ -365,6 +365,9 @@ importantFeaturesArr.push(livingstoneGeneral);
 const zimbaMission = L.marker([-17.317832093473495, 26.20335468459807], {icon : hospitalIcon}).bindTooltip("<font id=nameStyle>Zimba Mission Hospital</font>");
 importantFeaturesArr.push(zimbaMission); 
 
+const kazungulaHospital = L.marker([-17.771357372658734, 25.271446531179887], {icon : hospitalIcon}).bindTooltip("<font id=nameStyle>Kazungula District Hospital</font>");
+importantFeaturesArr.push(kazungulaHospital); 
+
 // DISTRICT HEALTH OFFICES 
 const livingstoneDHO = L.marker([-17.853783922094156, 25.858714500939616], {icon : officeIcon}).bindTooltip("<font id=nameStyle>Livingstone District Health Office</font>");
 importantFeaturesArr.push(livingstoneDHO); 
