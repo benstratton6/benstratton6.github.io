@@ -203,9 +203,8 @@ class AddCommunities {
             console.log(`URL: + ${url}`); 
             console.log(typeof url); 
             if (typeof url === "string") {
-                console.log("HERE WE ARE!!");
                 currentIcon.on('click', function(e) { 
-                    window.open(url);
+                    window.open(url, "_self");
                     //window.open("https://www.oncallafrica.org/kanyanga-rural-health-post");  
                 }); 
             } 

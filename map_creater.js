@@ -16,14 +16,14 @@ const bounds = L.latLngBounds(southwest, northeast);
 
  
 
-var map = L.map('map', {maxBounds : bounds}).setView([-16.170046439036582, 26.122190317600644], 8);
+var map = L.map('map', {maxBounds : bounds}).setView([-16.170046439036582, 26.122190317600644], 7);
 
 var bound = map.getBounds();
 console.log(bounds); 
 
 L.control.scale().addTo(map);
 
-map.options.maxZoom = 15;
+map.options.maxZoom = 16;
 
 
 // #############################################################
@@ -38,7 +38,7 @@ const standardMapIcon = new L.icon({
   iconSize:     [50, 50], // size of the icon
   shadowSize:   [100, 100], // size of the shadow
   iconAnchor:   [15, 50],
-  popupAnchor:  [9, -40],
+  popupAnchor:  [10, -55],
 }) 
 
 const ruralHealthPostIcon = new L.icon({
@@ -59,6 +59,36 @@ const outReachPostIcon = new L.icon({
   shadowSize:   [100, 100], // size of the shadow
   iconAnchor:   [20, 30],
   popupAnchor:  [-0, -40]
+  
+}) 
+
+const hospitalIcon = new L.icon({
+  iconUrl: "./Icons/hospitalIcon.png", 
+
+  iconSize:     [40, 40], // size of the icon
+  shadowSize:   [100, 100], // size of the shadow
+  iconAnchor:   [20, 30],
+  popupAnchor:  [0, 0]
+  
+}) 
+
+const officeIcon = new L.icon({
+  iconUrl: "./Icons/healthOfficeIcon.png", 
+
+  iconSize:     [40, 40], // size of the icon
+  shadowSize:   [100, 100], // size of the shadow
+  iconAnchor:   [20, 30],
+  popupAnchor:  [0, 0]
+  
+}) 
+
+const otherClinic = new L.icon({
+  iconUrl: "./Icons/otherclinics.png", 
+
+  iconSize:     [40, 40], // size of the icon
+  shadowSize:   [100, 100], // size of the shadow
+  iconAnchor:   [20, 30],
+  popupAnchor:  [0, 0]
   
 }) 
 
@@ -184,11 +214,11 @@ function onEachDynamic(layer, name, dataObj, url) {
   if (dataArr.includes(name)) {
     if (typeof url === "string") {
       layer.on('click', function() {
-        window.open(url)
+        window.open(url, "_self")
       })
     }
     const message = `<br><font id="values"> OCA began working here in ` + dataObj[name].toString();
-    return [name + message, {className : "toolTipsRHC", sticky : true, offset : L.point(100, 100)}];
+    return [name + message, {className : "toolTipsRHC", sticky : true, offset : L.point(100, 100), direction : 'right'}];
   }
   else {
     return [name, {className : "toolTipsRHC"}];
@@ -221,6 +251,7 @@ onEachFeature : function(feature, layer) {
 
 washLayerArr = [southernWASH, westernWASH]; 
 washLayer = layerGroupMaker(washLayerArr); 
+
 
 // ##############################################################
 // -------------------- HEALTH FACALITY -------------------------
@@ -263,6 +294,10 @@ for (let i=0; i<numCommunitesToPlot; i++) {
 
 healthFacalityLayer = layerGroupMaker(healthFacalityArr);
 
+// for key
+categoriesRHP = ['Rural Health Centre', 'Outreach Post']; 
+iconsImagesRHP = ["Icons/ruralHealthPostIcon.png", "Icons/outreachposticon.png"]; 
+
 // ##############################################################
 // ------------------- Digital Health -------------------------
 // ##############################################################
@@ -289,6 +324,7 @@ onEachFeature : function(feature, layer) {
 digitalHealthArr = [southernDigitalHealth, westernDigitalHealth]; 
 digitalHealthLayer = layerGroupMaker(digitalHealthArr); 
 
+
 // ##############################################################
 // ------------------- PERMENANT MARKERS ------------------------
 // ##############################################################
@@ -313,15 +349,77 @@ var OCA_HQ_location = {
 
 const OCAMarker = L.geoJSON(OCA_HQ_location, { pointToLayer: function(feature, latlng) {
   return L.marker(latlng, {icon : standardMapIcon}); 
-} } ).bindPopup(`<img id="image" src="Icons/On Call Africa_Logo.png"> <br> ${OCA_HQ_location.features[0].properties.name}`, {'className' : "OCAMarker"}).addTo(map).openPopup(); 
+} } ).bindPopup(`${OCA_HQ_location.features[0].properties.name}`, {'className' : "OCAMarker"}).addTo(map).openPopup(); 
 
 
-// #############################################################
-// --------------------- LAYER CONTROL--------------------------
-// #############################################################
+// ##############################################################
+// ------------- IMPORTANT OTHER FEATURES MARKERS ---------------
+// ##############################################################
+
+importantFeaturesArr = []; 
+
+// HOSPITALS 
+const livingstoneGeneral = L.marker([-17.84144894033052, 25.853454425537137], {icon : hospitalIcon}).bindTooltip("<font id=nameStyle>Livingstone General Hospital</font>"); 
+importantFeaturesArr.push(livingstoneGeneral); 
+
+const zimbaMission = L.marker([-17.317832093473495, 26.20335468459807], {icon : hospitalIcon}).bindTooltip("<font id=nameStyle>Zimba Mission Hospital</font>");
+importantFeaturesArr.push(zimbaMission); 
+
+// DISTRICT HEALTH OFFICES 
+const livingstoneDHO = L.marker([-17.853783922094156, 25.858714500939616], {icon : officeIcon}).bindTooltip("<font id=nameStyle>Livingstone District Health Office</font>");
+importantFeaturesArr.push(livingstoneDHO); 
+
+// OTHER CLINICS 
+const marambaClinic = L.marker([-17.847380784499567, 25.872039715393576], {icon : otherClinic}).bindTooltip("<font id=nameStyle>Maramba Clinic</font>"); 
+importantFeaturesArr.push(marambaClinic);
+
+const mahmatmaGhandiClinic = L.marker([-17.858147733338797, 25.842468701713756], {icon : otherClinic}).bindTooltip("<font id=nameStyle>Mahatma Gandhi Clinic</font>");
+importantFeaturesArr.push(mahmatmaGhandiClinic);
+
+importantFeatures = layerGroupMaker(importantFeaturesArr); 
+
+// for key 
+categoriesIntrestingFeat = ["Hospital", "District Health Office", "Clinic"]; 
+iconsImagesIntrestingFeat = ["Icons/hospitalIcon.png", "Icons/healthOfficeIcon.png", "Icons/otherclinics.png"]; 
+
+// #################################################################
+// --------------------- KEY CREATION ------------------------------
+// #################################################################
+
+function keyCreator(categories, iconsImages) { 
+
+  var div = L.DomUtil.create('div', 'info-legend');
+  labels = ['<strong style="padding: 70px; font-weight: bolder; font-size: 20px; text-decoration: underline; ">Key</strong>']; 
+
+  for (var i = 0; i < categories.length; i++) {
+
+          div.innerHTML += 
+          labels.push(
+              '<i> <img id="image" src=' + iconsImages[i] + '> </i> <font style="position: relative; top: -15px;">' +  categories[i] + '</font>')
+      }
+      div.innerHTML = labels.join('<br>');
+  return div;
+};
 
 
-//map.fitBounds(community.getBounds());
+// Key for rural health facaility improvment program 
+var ruralHealthKey = L.control({position: 'bottomright'});
+
+ruralHealthKey.onAdd = function (map) {
+  return keyCreator(categoriesRHP, iconsImagesRHP); 
+}
+
+// key for intresting features 
+var intrestingFeaturesKey = L.control({position: 'bottomleft'}); 
+intrestingFeaturesKey.onAdd = function(map) {
+  return keyCreator(categoriesIntrestingFeat, iconsImagesIntrestingFeat); 
+}
+
+
+
+// #################################################################
+// --------------------- LAYER CONTROL------------------------------
+// #################################################################
 
 
 const baseMaps = [{ 
@@ -341,25 +439,28 @@ const markersGrouped = [
     layers : {
       "Southern" : southernProvinces, 
       "Western" : westernProvience
+    } 
+  },
+  {
+    groupName : "Intresting Features", 
+    expanded : false, 
+    exclusive : false, 
+    layers : {
+      "Intresting Features" : importantFeatures
+    }
+  }, 
+  {
+    groupName : "Programs", 
+    expanded : true, 
+    exclusive : false, 
+    layers : {
+      "Model Package for HCF" : healthFacalityLayer,
+      "WASH In HCF" : washLayer,
+      "Digital Health" : digitalHealthLayer, 
     }
   }
 ]
 
-
-nullLayer = L.layerGroup([]);
-
-const programs = [{
-  groupName : "Programs", 
-  expanded : true, 
-  exclusive : false, 
-  layers : {
-    "Model Package for HCF" : healthFacalityLayer,
-    "WASH In HCF" : washLayer,
-    "Digital Health" : digitalHealthLayer, 
-    "CLEAR" : nullLayer
-  }
-}
-]
 
 const options = {
   container_width 	: "300px",
@@ -370,18 +471,53 @@ const options = {
 };
 
 
-
-// for base layers and other non program related layers
 lcontrol = L.control.groupedLayers(baseMaps, markersGrouped, options).addTo(map);
 
-// for program layers only 
-lcontrol2 = L.control.groupedLayers(programs, null, options).addTo(map);
 
+// dynamic selection of layers 
 
+map.on('overlayadd', function (eventLayer) {
 
+  let currentLayer = eventLayer.name; 
+  
 
+  if (currentLayer === "Model Package for HCF") {
+    ruralHealthKey.addTo(map);
+    console.log("Removing Layers")
+    setTimeout(() => { 
+      map.removeLayer(washLayer); 
+      map.removeLayer(digitalHealthLayer) }, 10); 
+  } else if (currentLayer === "WASH In HCF") {
+    map.removeControl(ruralHealthKey);
+    setTimeout(() => { 
+      map.removeLayer(healthFacalityLayer); 
+      map.removeLayer(digitalHealthLayer) }, 10); 
+  } else if (currentLayer === "Digital Health") {
+    map.removeControl(ruralHealthKey); 
+    setTimeout(() => { 
+      map.removeLayer(healthFacalityLayer); 
+      map.removeLayer(washLayer) }, 10); 
+  }
+  if (currentLayer === "Intresting Features") {
+    setTimeout(() => {
+      intrestingFeaturesKey.addTo(map);
+    }, 10);  
+  }
+  
+}); 
 
-
+map.on('overlayremove', function(eventLayer) { 
+  
+  if (eventLayer.name === "Model Package for HCF") {
+    setTimeout(() => {
+      map.removeControl(ruralHealthKey);
+    }, 10); 
+  }
+  if (eventLayer.name === "Intresting Features") {
+    setTimeout(() => {
+      map.removeControl(intrestingFeaturesKey); 
+    }, 10);  
+}})
 
 
 // #############################################################
