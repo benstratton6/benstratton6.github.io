@@ -497,8 +497,7 @@ map.on('overlayadd', function (eventLayer) {
     setTimeout(() => { 
       map.removeLayer(healthFacalityLayer); 
       map.removeLayer(washLayer) }, 10); 
-  }
-  if (currentLayer === "Intresting Features") {
+  } else if (currentLayer === "Intresting Features") {
     setTimeout(() => {
       intrestingFeaturesKey.addTo(map);
     }, 10);  
@@ -513,7 +512,7 @@ map.on('overlayremove', function(eventLayer) {
       map.removeControl(ruralHealthKey);
     }, 10); 
   }
-  if (eventLayer.name === "Intresting Features") {
+  else if (eventLayer.name === "Intresting Features") {
     setTimeout(() => {
       map.removeControl(intrestingFeaturesKey); 
     }, 10);  
