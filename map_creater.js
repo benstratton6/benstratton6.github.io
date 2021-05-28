@@ -35,7 +35,7 @@ const standardMapIcon = new L.icon({
   //iconUrl: "./Icons/On Call Africa_Logo.png",
   iconUrl : "Icons/map-marker-icon_34392.png", 
   
-  iconSize:     [50, 50], // size of the icon
+  iconSize:     [40, 40], // size of the icon
   shadowSize:   [100, 100], // size of the shadow
   iconAnchor:   [15, 50],
   popupAnchor:  [10, -55],
