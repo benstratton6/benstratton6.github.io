@@ -38,7 +38,7 @@ const standardMapIcon = new L.icon({
   iconSize:     [40, 40], // size of the icon
   shadowSize:   [100, 100], // size of the shadow
   iconAnchor:   [15, 50],
-  popupAnchor:  [10, -55],
+  popupAnchor:  [8, -55],
 }) 
 
 const ruralHealthPostIcon = new L.icon({
