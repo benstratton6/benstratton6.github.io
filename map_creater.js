@@ -33,7 +33,7 @@ map.options.maxZoom = 16;
 
 const standardMapIcon = new L.icon({
   //iconUrl: "./Icons/On Call Africa_Logo.png",
-  iconUrl : "Icons/map-marker-icon_34392.png", 
+  iconUrl : "Icons/mapPin.png", 
   
   iconSize:     [40, 40], // size of the icon
   shadowSize:   [100, 100], // size of the shadow
