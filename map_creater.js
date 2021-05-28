@@ -467,7 +467,7 @@ const options = {
   container_maxHeight : "350px", 
   group_maxHeight     : "100px",
   exclusive       	: false,
-  collapsed : false,
+  collapsed : true,
 };
 
 
