@@ -33,16 +33,17 @@ map.options.maxZoom = 16;
 
 const standardMapIcon = new L.icon({
   //iconUrl: "./Icons/On Call Africa_Logo.png",
-  iconUrl : "./Icons/mapPin.png", 
+  //iconUrl : "Icons/map-marker-icon_34392.png", 
+  iconUrl : "Icons/mapPin.png", 
   
   iconSize:     [40, 40], // size of the icon
   shadowSize:   [100, 100], // size of the shadow
   iconAnchor:   [15, 50],
-  popupAnchor:  [5, -55],
+  popupAnchor:  [6, -55],
 }) 
 
-const ruralHealthPostIcon = new L.icon({
-  iconUrl: "./Icons/ruralHealthPostIcon.png",
+const healthFacalityIcon = new L.icon({
+  iconUrl: "./Icons/healthFacalityIcon.png",
   
   iconSize:     [40, 40], // size of the icon
   shadowSize:   [100, 100], // size of the shadow
@@ -52,7 +53,7 @@ const ruralHealthPostIcon = new L.icon({
 }) 
 
 const outReachPostIcon = new L.icon({
-  iconUrl: "./Icons/outreachposticon.png",
+  iconUrl: "./Icons/outreachPostIcon.png",
   //iconUrl : "./Icons/icons8-plus-30.png", 
 
   iconSize:     [40, 40], // size of the icon
@@ -82,16 +83,6 @@ const officeIcon = new L.icon({
   
 }) 
 
-const otherClinic = new L.icon({
-  iconUrl: "./Icons/otherclinics.png", 
-
-  iconSize:     [40, 40], // size of the icon
-  shadowSize:   [100, 100], // size of the shadow
-  iconAnchor:   [20, 30],
-  popupAnchor:  [0, 0]
-  
-}) 
-
 
 // ##############################################################
 // ----------------------- BASE LAYERS --------------------------
@@ -101,7 +92,7 @@ function layerGroupMaker(arrMarkers) {
   var newLayer = L.layerGroup(arrMarkers); 
   return newLayer; 
 }
-
+/*
 // street map 
 var street_view = L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=qFGn0FanTKV7R8DShikU',{
     tileSize: 512,
@@ -112,8 +103,16 @@ var street_view = L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}
     crossOrigin: true,
     maxBoundsViscosity: 1.0,
     }).addTo(map);
+*/
 
 
+var street_view = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    minZoom: 7,
+    maxzoom: 19,
+    attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+}).addTo(map);
+ 
+/*
 // satalite map 
 var stat_view = L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=qFGn0FanTKV7R8DShikU',{
     tileSize: 512,
@@ -123,6 +122,14 @@ var stat_view = L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jp
     attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
     crossOrigin: true
     });
+*/ 
+var mapLink = '<a href="http://www.esri.com/">Esri</a>';
+var wholink = 'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
+var stat_view = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: '&copy; '+mapLink+', '+wholink,
+    minZoom: 7,
+    maxZoom: 15, 
+});
 
 // toner 
 var toner = L.tileLayer('https://api.maptiler.com/maps/toner/{z}/{x}/{y}.png?key=qFGn0FanTKV7R8DShikU',{
@@ -295,8 +302,8 @@ for (let i=0; i<numCommunitesToPlot; i++) {
 healthFacalityLayer = layerGroupMaker(healthFacalityArr);
 
 // for key
-categoriesRHP = ['Rural Health Centre', 'Outreach Post']; 
-iconsImagesRHP = ["Icons/ruralHealthPostIcon.png", "Icons/outreachposticon.png"]; 
+categoriesRHP = ['Health Facility', 'Outreach Post']; 
+iconsImagesRHP = ["Icons/healthFacalityIcon.png", "Icons/outreachPostIcon.png"]; 
 
 // ##############################################################
 // ------------------- Digital Health -------------------------
@@ -373,17 +380,17 @@ const livingstoneDHO = L.marker([-17.853783922094156, 25.858714500939616], {icon
 importantFeaturesArr.push(livingstoneDHO); 
 
 // OTHER CLINICS 
-const marambaClinic = L.marker([-17.847380784499567, 25.872039715393576], {icon : otherClinic}).bindTooltip("<font id=nameStyle>Maramba Clinic</font>"); 
+const marambaClinic = L.marker([-17.847380784499567, 25.872039715393576], {icon : healthFacalityIcon}).bindTooltip("<font id=nameStyle>Maramba Clinic</font>"); 
 importantFeaturesArr.push(marambaClinic);
 
-const mahmatmaGhandiClinic = L.marker([-17.858147733338797, 25.842468701713756], {icon : otherClinic}).bindTooltip("<font id=nameStyle>Mahatma Gandhi Clinic</font>");
+const mahmatmaGhandiClinic = L.marker([-17.858147733338797, 25.842468701713756], {icon : healthFacalityIcon}).bindTooltip("<font id=nameStyle>Mahatma Gandhi Clinic</font>");
 importantFeaturesArr.push(mahmatmaGhandiClinic);
 
 importantFeatures = layerGroupMaker(importantFeaturesArr); 
 
 // for key 
-categoriesIntrestingFeat = ["Hospital", "District Health Office", "Clinic"]; 
-iconsImagesIntrestingFeat = ["Icons/hospitalIcon.png", "Icons/healthOfficeIcon.png", "Icons/otherclinics.png"]; 
+categoriesIntrestingFeat = ["District Hospital", "District Health Office", "Health Facility"]; 
+iconsImagesIntrestingFeat = ["Icons/hospitalIcon.png", "Icons/healthOfficeIcon.png", "Icons/healthFacalityIcon.png"]; 
 
 // #################################################################
 // --------------------- KEY CREATION ------------------------------
@@ -467,10 +474,10 @@ const markersGrouped = [
 
 const options = {
   container_width 	: "300px",
-  container_maxHeight : "350px", 
+  container_maxHeight : "450px", 
   group_maxHeight     : "100px",
   exclusive       	: false,
-  collapsed : true,
+  collapsed : false,
 };
 
 
@@ -500,7 +507,8 @@ map.on('overlayadd', function (eventLayer) {
     setTimeout(() => { 
       map.removeLayer(healthFacalityLayer); 
       map.removeLayer(washLayer) }, 10); 
-  } else if (currentLayer === "Intresting Features") {
+  }
+  else if (currentLayer === "Intresting Features") {
     setTimeout(() => {
       intrestingFeaturesKey.addTo(map);
     }, 10);  
@@ -520,6 +528,102 @@ map.on('overlayremove', function(eventLayer) {
       map.removeControl(intrestingFeaturesKey); 
     }, 10);  
 }})
+
+
+// #################################################################
+// -------------------- DEFINITIONS BUTTON -------------------------
+// #################################################################
+
+
+function firstButtons() {
+
+  // creates the buttons in the first layer of the dialog 
+
+  const keys = Object.keys(defintions);
+
+  const lengthOfKeys = keys.length; 
+
+  let output = {};
+  
+  for (var i=0; i<lengthOfKeys; i++) {
+    //output[keys[i]] = defintions[keys[i]]["fullName"]; 
+    console.log("!");
+    console.log(defintions[keys[i]]["fullName"]);
+    let currentSelector = `#button_${i}`; 
+    output[`${keys[i]} : ${defintions[keys[i]]["fullName"]}`]  = () => {  $(currentSelector).dialog('open') }; 
+  }
+
+  console.log(output); 
+  return output;
+}
+
+// creates the second layer of dialogs 
+
+const keys = Object.keys(defintions);
+
+const lengthOfKeys = keys.length; 
+
+output = {}; 
+
+for (var i=0; i<lengthOfKeys; i++) {
+  selector = `button_${i}`; 
+  var div = document.createElement("div");
+
+  const newContent = document.createTextNode(defintions[keys[i]]['fullDefinition']); 
+  
+  console.log("DIV")
+  console.log(div)
+  
+  div.style['border-top-color'] = 'black';
+  div.style['border-top-style'] = 'solid';
+  div.style['border-top-width'] = '2px';
+
+  div.appendChild(newContent); 
+  div.id = selector; 
+  div.className = 'definitionsClass'
+  const testDiv = document.getElementById("testDiv")
+
+  document.body.insertBefore(div, testDiv);
+  
+  const fullSelector = "#" + selector;
+
+  $(fullSelector).dialog({
+    autoOpen : false,
+    modal : true,
+    zIndex: 10000, 
+    width: 700,
+    buttons: {
+      "Okay" : function() { $(this).dialog('close'); }
+    }
+  });
+
+  const headerSelector = `#ui-id-${i+1}`
+  
+  $(headerSelector).append(defintions[keys[i]]['fullName'])
+
+  console.log(div); 
+
+}
+
+
+$('#firstbuttons').dialog({
+    autoOpen: false,
+    modal: true,
+    zIndex: 10000,
+    width: 600,
+    buttons: firstButtons()
+});
+
+
+$( document ).ready(function() {
+
+  $('#deffButton').click(function() {
+    $('#firstbuttons').dialog("open");
+  })
+  
+});
+
+
 
 
 // #############################################################

@@ -198,13 +198,13 @@ class AddCommunities {
 
         if (letters === "RHP") {
 
-            let currentIcon = L.marker(latlng, {icon : ruralHealthPostIcon}); 
+            let currentIcon = L.marker(latlng, {icon : healthFacalityIcon}); 
             
             console.log(`URL: + ${url}`); 
             console.log(typeof url); 
             if (typeof url === "string") {
                 currentIcon.on('click', function(e) { 
-                    window.open(url, "_self");
+                    window.open(url);
                     //window.open("https://www.oncallafrica.org/kanyanga-rural-health-post");  
                 }); 
             } 
