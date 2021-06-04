@@ -454,7 +454,7 @@ function keyCreator(categories, iconsImages) {
 
           div.innerHTML += 
           labels.push(
-              '<i> <img id="image" src=' + iconsImages[i] + '> </i> <font style="position: relative; top: -15px;">' +  categories[i] + '</font>')
+              '<i> <img id="image" src=' + iconsImages[i] + '> </i> <font style="position: relative; top: -5px;">' +  categories[i] + '</font>')
       }
       div.innerHTML = labels.join('<br>');
   return div;
