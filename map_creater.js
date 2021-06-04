@@ -255,6 +255,8 @@ onEachFeature : function(feature, layer) {
 
 washLayerArr = [southernWASH, westernWASH]; 
 
+washPointsLayerArr = []; 
+
 const WASHHealthCentresToPlot = Object.keys(washDistrictsData); 
 const numWASHCommunitesToPlot = WASHHealthCentresToPlot.length; 
 
@@ -273,7 +275,7 @@ for (let i=0; i<numWASHCommunitesToPlot; i++) {
 
   for (var j=0; j<changeableLayers.length; j++) {
     if (typeof changeableLayers[j] !== 'undefined') {
-      washLayerArr.push(changeableLayers[j]); 
+      washPointsLayerArr.push(changeableLayers[j]); 
     }
   }
 }
@@ -281,6 +283,8 @@ for (let i=0; i<numWASHCommunitesToPlot; i++) {
 
 
 washLayer = layerGroupMaker(washLayerArr); 
+
+washPointsLayer = layerGroupMaker(washPointsLayerArr); 
 
 // for wash key 
 
@@ -597,6 +601,13 @@ map.on('zoomend', function() {
   }
   else if (currentZoom <= 10) {
     healthFacalityLayer.removeLayer(healthFacalityPointsLayer)
+  }
+
+  if (currentZoom > 7) {
+    washLayer.addLayer(washPointsLayer); 
+  }
+  else if (currentZoom <= 7) {
+    washLayer.removeLayer(washPointsLayer); 
   }
 })
 
