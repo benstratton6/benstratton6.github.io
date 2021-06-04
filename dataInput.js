@@ -7,12 +7,19 @@ washDistricts = {"Kazungula": 2021,
                  "Sesheke": 2021}; 
 
 // ######## DISTRICT FOR HEALTH FACALITY IMPROVEMENT PROGRAM ##########
-healthFacalityDistricts = {"Zimba" : 2015, 
-                           "Kazungula" : 2016}
+healthFacalityDistricts = {"Zimba" : 2021, 
+                           "Kazungula" : 2021}
 
 // ######## DISTRICT FOR DIGITAL HEALTH PROGRAM ##########
-digitalHealthdistricts = {"Livingstone" : 2020, 
+digitalHealthdistricts = {"Livingstone" : 2021, 
                           "Kazungula" : 2021}
+
+
+
+// ######## the URL where you will be taken if filled in districted is clicked #########
+washLinkURL = null; 
+healthFacalityURL = null; 
+digitalHealthURL = null; 
 
 
 // HEALTH FACALITY DATA 
@@ -74,6 +81,27 @@ KanyangaData = {
     "URL" : "https://www.oncallafrica.org/kanyanga-rural-health-post"
 }
 
+KatapaziData = {
+    "points" : "Katapazi/Katapazi_RHP.gpx",
+    "routes" : null,
+    "stats" : null, 
+    "URL" : "https://www.oncallafrica.org/katapazi-rural-health-centre"
+}
+
 communityData = {
-    "Kanyanga" : KanyangaData
+    "Kanyanga" : KanyangaData,
+    "Katapazi" : KatapaziData
+}
+
+// WASH DISTRICT DATA 
+
+firstData = {
+    "points" : "WASHHealthCentres/washHealthCentres1.gpx",
+    "routes" : null,
+    "stats" : null, 
+    "URL" : null
+}
+
+washDistrictsData = {
+    "first" : firstData
 }

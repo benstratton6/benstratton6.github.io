@@ -2,17 +2,22 @@
 <html> 
     <head>
         <style>
-            html, body {
-                height: 100%;
-                margin: 0;
-                padding: 0;
+            .wrapper {
+                position: absolute;
+            }
+            #mapFrame {
+                position: relative;
+                top: 50%; 
+                left: 10%; 
             }
         </style>
     </head>
 
 </body>
+<div id=wrapper>
     <div> 
-        <iframe src="home.html"  style="width: 1500px; height: 600px; border : 10px solid black;"></iframe>
+        <iframe id=mapFrame src="home.html"  style="width: 1500px; height: 600px; border : 3px solid rgba(92, 150, 172, 1);right: 50px;"></iframe>
     </div>
+</div>    
 </body> 
 </html> 

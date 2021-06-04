@@ -23,7 +23,7 @@ console.log(bounds);
 
 L.control.scale().addTo(map);
 
-map.options.maxZoom = 16;
+map.options.maxZoom = 12;
 
 
 // #############################################################
@@ -225,7 +225,7 @@ function onEachDynamic(layer, name, dataObj, url) {
       })
     }
     const message = `<br><font id="values"> OCA began working here in ` + dataObj[name].toString();
-    return [name + message, {className : "toolTipsRHC", sticky : true, offset : L.point(100, 100), direction : 'right'}];
+    return [name + message, {className : "toolTipsRHC", sticky : true, offset : L.point(75, 75), direction : 'right'}];
   }
   else {
     return [name, {className : "toolTipsRHC"}];
@@ -237,10 +237,8 @@ function onEachDynamic(layer, name, dataObj, url) {
 // -------------------------- WASH -----------------------------
 // ##############################################################
 
-washLinkURL = null; 
-
 const southernWASH = L.geoJSON(southernProvinceData, {style : function(feature) {
-  return styleDynamic(feature.properties.name, washDistricts, "#000000", "#4fe2ff")
+  return styleDynamic(feature.properties.name, washDistricts, "#000000", "#00b0c0")
 }, 
 onEachFeature : function(feature, layer) { 
   const message = onEachDynamic(layer, feature.properties.name, washDistricts, washLinkURL)
@@ -248,26 +246,54 @@ onEachFeature : function(feature, layer) {
 }}); 
 
 const westernWASH = L.geoJson(westernProvinceData, {style : function(feature) {
-  return styleDynamic(feature.properties.name, washDistricts, "#535353", "#4fe2ff")
+  return styleDynamic(feature.properties.name, washDistricts, "#535353", "#00b0c0")
 }, 
 onEachFeature : function(feature, layer) {
   const message = onEachDynamic(layer, feature.properties.name, washDistricts, washLinkURL);
   layer.bindTooltip(message[0], message[1]); 
 }}); 
 
-
 washLayerArr = [southernWASH, westernWASH]; 
+
+const WASHHealthCentresToPlot = Object.keys(washDistrictsData); 
+const numWASHCommunitesToPlot = WASHHealthCentresToPlot.length; 
+
+
+for (let i=0; i<numWASHCommunitesToPlot; i++) { 
+  let currentCommunity = washDistrictsData[WASHHealthCentresToPlot[i]]
+  //let community = new AddCommunities(currentCommunity["points"], currentCommunity["routes"], currentCommunity["stats"], currentCommunity["URL"]).getFullLayer;
+  
+  // TESTING 
+  let community = new AddCommunities(currentCommunity["points"], currentCommunity["routes"], currentCommunity["stats"], currentCommunity["URL"])
+  let routeLayer = community.getRouteLayer; 
+  let pointsLayer = community.getPointsLayer; 
+  let RHPLayer = community.getRHPLayer;
+
+  changeableLayers = [RHPLayer, pointsLayer, routeLayer]; 
+
+  for (var j=0; j<changeableLayers.length; j++) {
+    if (typeof changeableLayers[j] !== 'undefined') {
+      washLayerArr.push(changeableLayers[j]); 
+    }
+  }
+}
+
+
+
 washLayer = layerGroupMaker(washLayerArr); 
 
+// for wash key 
+
+categoriesWASH = ['Hospital', 'Health Facility']; 
+iconsImagesWASH = ["Icons/hospitalIcon.png", "Icons/healthFacalityIcon.png"] 
 
 // ##############################################################
 // -------------------- HEALTH FACALITY -------------------------
 // ##############################################################
 
-healthFacalityURL = null; 
 
 const southernHealthFaclity = L.geoJSON(southernProvinceData, {style : function(feature) {
-  return styleDynamic(feature.properties.name, healthFacalityDistricts, "#000000", "#f95c5c")
+  return styleDynamic(feature.properties.name, healthFacalityDistricts, "#000000", "#d7953e")
 }, 
 onEachFeature : function(feature, layer) { 
   const message = onEachDynamic(layer, feature.properties.name, healthFacalityDistricts, healthFacalityURL)
@@ -275,7 +301,7 @@ onEachFeature : function(feature, layer) {
 }})
 
 const westernHealthFaclity = L.geoJSON(westernProvinceData, {style : function(feature) {
-  return styleDynamic(feature.properties.name, healthFacalityDistricts, "#535353", "#f95c5c")
+  return styleDynamic(feature.properties.name, healthFacalityDistricts, "#535353", "#d7953e")
 }, 
 onEachFeature : function(feature, layer) {
   const message = onEachDynamic(layer, feature.properties.name, healthFacalityDistricts, healthFacalityURL)
@@ -283,6 +309,9 @@ onEachFeature : function(feature, layer) {
 }})
 
 healthFacalityArr = [southernHealthFaclity, westernHealthFaclity]; 
+
+healthFacalityPointsArr = []
+ 
 
 // Create community layers to also be added 
 
@@ -294,12 +323,29 @@ console.log(numCommunitesToPlot);
 
 for (let i=0; i<numCommunitesToPlot; i++) { 
   let currentCommunity = communityData[communitesToPlot[i]]
-  let community = new AddCommunities(currentCommunity["points"], currentCommunity["routes"], currentCommunity["stats"], currentCommunity["URL"]).getFullLayer;
-  console.log(currentCommunity["URL"]); 
-  healthFacalityArr.push(community); 
+  //let community = new AddCommunities(currentCommunity["points"], currentCommunity["routes"], currentCommunity["stats"], currentCommunity["URL"]).getFullLayer;
+  
+  // TESTING 
+  let community = new AddCommunities(currentCommunity["points"], currentCommunity["routes"], currentCommunity["stats"], currentCommunity["URL"])
+  let routeLayer = community.getRouteLayer; 
+  let pointsLayer = community.getPointsLayer; 
+  let RHPLayer = community.getRHPLayer; 
+
+  healthFacalityArr.push(RHPLayer); 
+
+  healthFacalityPointsArr.push(pointsLayer); 
+
+  changeableLayers = [pointsLayer, routeLayer]; 
+
+  for (var j=0; j<changeableLayers.length; j++) {
+    if (typeof changeableLayers[j] !== 'undefined') {
+      healthFacalityPointsArr.push(changeableLayers[j]); 
+    }
+  }
 }
 
 healthFacalityLayer = layerGroupMaker(healthFacalityArr);
+healthFacalityPointsLayer = layerGroupMaker(healthFacalityPointsArr);
 
 // for key
 categoriesRHP = ['Health Facility', 'Outreach Post']; 
@@ -309,10 +355,9 @@ iconsImagesRHP = ["Icons/healthFacalityIcon.png", "Icons/outreachPostIcon.png"];
 // ------------------- Digital Health -------------------------
 // ##############################################################
 
-digitalHealthURL = null; 
 
 const southernDigitalHealth = L.geoJSON(southernProvinceData, {style : function(feature) {
-  return styleDynamic(feature.properties.name, digitalHealthdistricts, "#000000", "#e1ff21")
+  return styleDynamic(feature.properties.name, digitalHealthdistricts, "#000000", "#3f6361")
 }, 
 onEachFeature : function(feature, layer) {
   const message = onEachDynamic(layer, feature.properties.name, digitalHealthdistricts, digitalHealthURL)
@@ -320,7 +365,7 @@ onEachFeature : function(feature, layer) {
 }})
 
 const westernDigitalHealth = L.geoJSON(westernProvinceData, {style : function(feature) {
-  return styleDynamic(feature.properties.name, digitalHealthdistricts, "#535353", "#e1ff21")
+  return styleDynamic(feature.properties.name, digitalHealthdistricts, "#535353", "#3f6361")
 }, 
 onEachFeature : function(feature, layer) {
   const message = onEachDynamic(layer, feature.properties.name, digitalHealthdistricts, digitalHealthURL)
@@ -425,12 +470,14 @@ intrestingFeaturesKey.onAdd = function(map) {
   return keyCreator(categoriesIntrestingFeat, iconsImagesIntrestingFeat); 
 }
 
-
+var WASHKey = L.control({position: 'bottomright'}); 
+WASHKey.onAdd = function(map) {
+  return keyCreator(categoriesWASH, iconsImagesWASH); 
+}
 
 // #################################################################
 // --------------------- LAYER CONTROL------------------------------
 // #################################################################
-
 
 const baseMaps = [{ 
     groupName : "Base Maps",
@@ -464,8 +511,8 @@ const markersGrouped = [
     expanded : true, 
     exclusive : false, 
     layers : {
-      "Model Package for HCF" : healthFacalityLayer,
-      "WASH In HCF" : washLayer,
+      "Model Package for HF" : healthFacalityLayer,
+      "WASH In HF" : washLayer,
       "Digital Health" : digitalHealthLayer, 
     }
   }
@@ -491,19 +538,23 @@ map.on('overlayadd', function (eventLayer) {
   let currentLayer = eventLayer.name; 
   
 
-  if (currentLayer === "Model Package for HCF") {
+  if (currentLayer === "Model Package for HF") {
     ruralHealthKey.addTo(map);
+    map.removeControl(WASHKey);
     console.log("Removing Layers")
     setTimeout(() => { 
       map.removeLayer(washLayer); 
-      map.removeLayer(digitalHealthLayer) }, 10); 
-  } else if (currentLayer === "WASH In HCF") {
+      map.removeLayer(digitalHealthLayer) }, 10);
+
+  } else if (currentLayer === "WASH In HF") {
     map.removeControl(ruralHealthKey);
+    WASHKey.addTo(map); 
     setTimeout(() => { 
       map.removeLayer(healthFacalityLayer); 
       map.removeLayer(digitalHealthLayer) }, 10); 
   } else if (currentLayer === "Digital Health") {
     map.removeControl(ruralHealthKey); 
+    map.removeControl(WASHKey);
     setTimeout(() => { 
       map.removeLayer(healthFacalityLayer); 
       map.removeLayer(washLayer) }, 10); 
@@ -518,7 +569,7 @@ map.on('overlayadd', function (eventLayer) {
 
 map.on('overlayremove', function(eventLayer) { 
   
-  if (eventLayer.name === "Model Package for HCF") {
+  if (eventLayer.name === "Model Package for HF") {
     setTimeout(() => {
       map.removeControl(ruralHealthKey);
     }, 10); 
@@ -526,9 +577,28 @@ map.on('overlayremove', function(eventLayer) {
   else if (eventLayer.name === "Intresting Features") {
     setTimeout(() => {
       map.removeControl(intrestingFeaturesKey); 
+    }, 10); 
+  }
+  else if (eventLayer.name === "WASH In HF") {
+    setTimeout(() => {
+      map.removeControl(WASHKey); 
     }, 10);  
+
 }})
 
+
+map.on('zoomend', function() {
+
+  let currentZoom = map.getZoom();
+  console.log("CURRENT ZOOM"); 
+  console.log(currentZoom)
+  if (currentZoom > 10) {
+    healthFacalityLayer.addLayer(healthFacalityPointsLayer)
+  }
+  else if (currentZoom <= 10) {
+    healthFacalityLayer.removeLayer(healthFacalityPointsLayer)
+  }
+})
 
 // #################################################################
 // -------------------- DEFINITIONS BUTTON -------------------------
@@ -543,16 +613,27 @@ function firstButtons() {
 
   const lengthOfKeys = keys.length; 
 
-  let output = {};
+  let output = [];
   
   for (var i=0; i<lengthOfKeys; i++) {
     //output[keys[i]] = defintions[keys[i]]["fullName"]; 
+    //currentButton = {}
     console.log("!");
     console.log(defintions[keys[i]]["fullName"]);
     let currentSelector = `#button_${i}`; 
-    output[`${keys[i]} : ${defintions[keys[i]]["fullName"]}`]  = () => {  $(currentSelector).dialog('open') }; 
+    //currentButton[`${keys[i]} : ${defintions[keys[i]]["fullName"]}`]  = { click : function() { $(currentSelector).dialog('open') } }; 
+    currentButton = {text : `${keys[i]} : ${defintions[keys[i]]["fullName"]}`, click : function() { 
+      $(currentSelector).dialog('open');
+      $('#firstbuttons').dialog('close'); 
+    }};
+    output.push(currentButton); 
   }
 
+  const okayButton = { id : 'okaybutton', text : "Okay", click : function() { $('#firstbuttons').dialog('close') } }; 
+
+
+  output.push(okayButton); 
+  console.log("OUPUT");
   console.log(output); 
   return output;
 }
@@ -566,6 +647,8 @@ const lengthOfKeys = keys.length;
 output = {}; 
 
 for (var i=0; i<lengthOfKeys; i++) {
+
+  // for each definition create a div to hold the information 
   selector = `button_${i}`; 
   var div = document.createElement("div");
 
@@ -587,14 +670,20 @@ for (var i=0; i<lengthOfKeys; i++) {
   
   const fullSelector = "#" + selector;
 
+  // create a dialog to store the information that is now stored in the div. 
   $(fullSelector).dialog({
     autoOpen : false,
     modal : true,
     zIndex: 10000, 
     width: 700,
-    buttons: {
-      "Okay" : function() { $(this).dialog('close'); }
-    }
+    buttons: [{
+      id : 'okaybuttonSecond', 
+      text: 'Okay', 
+      click : function() { 
+        $(this).dialog('close');
+        $('#firstbuttons').dialog('open');
+      }
+    }]
   });
 
   const headerSelector = `#ui-id-${i+1}`
@@ -610,7 +699,7 @@ $('#firstbuttons').dialog({
     autoOpen: false,
     modal: true,
     zIndex: 10000,
-    width: 600,
+    width: 700,
     buttons: firstButtons()
 });
 
