@@ -17,7 +17,7 @@ digitalHealthdistricts = {"Livingstone" : 2021,
 
 
 // ######## the URL where you will be taken if filled in districted is clicked #########
-washLinkURL = "https://www.wateraid.org/where-we-work/zambia"; 
+washLinkURL = null; 
 healthFacalityURL = null; 
 digitalHealthURL = null; 
 
