@@ -227,7 +227,14 @@ class AddCommunities {
         const keys = Object.keys(stats) 
         const lengthKeys = keys.length; 
 
-        let output = `<font id = nameStyle> ${name} </font> <br> Distance from RHP: ${distance}`; 
+        let output= ""; 
+
+        if (distance === null) {
+            output += `<font id = nameStyle> ${name} </font>`; 
+        }
+        else {
+            output += `<font id = nameStyle> ${name} </font> <br> Distance from RHP: ${distance} km`; 
+        }
 
         for (let i=0; i<lengthKeys; i++) {
             output += `<br>${keys[i]}: <font id=values>${stats[keys[i]].toString()}</font>`; 
@@ -282,15 +289,12 @@ class AddCommunities {
         }
         else {
           if (typeof distanceFromRHP === "number" && allStatsKeys.includes(name)) {
-             
             const roundedDistance = Math.floor(distanceFromRHP/100) / 10;
             layer.bindTooltip(text(name, roundedDistance, allStats[name]), {className : "toolTipsRHC"}); 
 
+          } else if (typeof distanceFromRHP !== "number" && allStatsKeys.includes(name)) {
+            layer.bindTooltip(text(name, null, allStats[name]), {className : "toolTipsRHC"}); 
           }
-          else if (typeof distanceFromRHP === "number") {
-            const roundedDistance = Math.floor(distanceFromRHP/100) / 10;
-            layer.bindTooltip(text(name, roundedDistance, {}), {className : "toolTipsRHC"}); 
-          } 
           else {
                layer.bindTooltip(`<font id=nameStyle> ${name} </font>`, {className : "toolTipsRHC"});
           }

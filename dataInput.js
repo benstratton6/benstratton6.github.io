@@ -1,5 +1,5 @@
 
-// What districts are involved with which programs 
+// This is where all data that is displayed on the map is colleted together to then be sent to the map creator that formats it into the map. 
 
 // ######## DISTRICT FOR WATERAID R2R WASH PROGRAM ##########
 washDistricts = {"Kazungula": 2021, 
@@ -17,7 +17,7 @@ digitalHealthdistricts = {"Livingstone" : 2021,
 
 
 // ######## the URL where you will be taken if filled in districted is clicked #########
-washLinkURL = null; 
+washLinkURL = "https://www.wateraid.org/us/"; 
 healthFacalityURL = null; 
 digitalHealthURL = null; 
 
@@ -39,7 +39,7 @@ KanyangaStatsData = {
     "Siakasipa" : {
         "No CHWs" : 10
     },
-    "Simulelbana" : {
+    "Simulelabana" : {
         "No CHWs" : 7
     },
     "Mazanzya" :  {
@@ -104,4 +104,33 @@ firstData = {
 
 washDistrictsData = {
     "first" : firstData
+}
+
+// INTRESTING FEATURES 
+
+intrestingFeatures = {
+    "Livingstone General Hospital" : {
+        type : "hospital", 
+        location : [-17.84144894033052, 25.853454425537137]
+    }, 
+    "Zimba Mission Hospital" : {
+        type : "hospital", 
+        location : [-17.317832093473495, 26.20335468459807]
+    }, 
+    "Kazungula Hospital" : {
+        type : "hospital", 
+        location : [-17.771357372658734, 25.271446531179887]
+    },
+    "Livingstone District Health Office" : {
+        type : "office", 
+        location : [-17.853783922094156, 25.858714500939616]
+    },
+    "Maramba Clinic" : {
+        type : "health", 
+        location : [-17.847380784499567, 25.872039715393576]
+    }, 
+    "Mahmatma Ghandi Clinic" : {
+        type : "health", 
+        location : [-17.858147733338797, 25.842468701713756]
+    }
 }
