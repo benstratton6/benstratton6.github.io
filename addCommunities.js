@@ -292,7 +292,7 @@ class AddCommunities {
             const roundedDistance = Math.floor(distanceFromRHP/100) / 10;
             layer.bindTooltip(text(name, roundedDistance, allStats[name]), {className : "toolTipsRHC"}); 
 
-          } else if (typeof distanceFromRHP !== "number" && allStatsKeys.includes(name)) {
+          } else if (allStatsKeys.includes(name)) {
             layer.bindTooltip(text(name, null, allStats[name]), {className : "toolTipsRHC"}); 
           }
           else {
