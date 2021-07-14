@@ -782,7 +782,7 @@ $('#instructionsButtonContent').dialog({
   autoOpen: false,
   modal: true,
   zIndex: 100000,
-  width: 800,
+  width: 900,
   buttons: [{ 
     id : 'okaybutton', 
     text : "Okay", 
