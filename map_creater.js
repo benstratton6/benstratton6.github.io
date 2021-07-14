@@ -1,4 +1,6 @@
-// ---------------------- IMPORTS -------------------------------
+// ---------------------- JOB -------------------------------
+
+// This pulls together everything to make and format the map. 
 
 // #############################################################
 // ----------------------- MAP ---------------------------------
@@ -16,14 +18,14 @@ const bounds = L.latLngBounds(southwest, northeast);
 
  
 
-var map = L.map('map', {maxBounds : bounds}).setView([-16.170046439036582, 26.122190317600644], 7);
+var map = L.map('map', {maxBounds : bounds}).setView([-16.170046439036582, 26.122190317600644], 7).fitWorld();
 
 var bound = map.getBounds();
 console.log(bounds); 
 
 L.control.scale().addTo(map);
 
-map.options.maxZoom = 12;
+map.options.maxZoom = 14;
 
 
 // #############################################################
@@ -131,17 +133,6 @@ var stat_view = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services
     maxZoom: 15, 
 });
 
-// toner 
-var toner = L.tileLayer('https://api.maptiler.com/maps/toner/{z}/{x}/{y}.png?key=qFGn0FanTKV7R8DShikU',{
-    tileSize: 512,
-    zoomOffset: -1,
-    minZoom: 1,
-    attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
-    crossOrigin: true
-  });
-
-// -18.279119300632832, 21.22778106941376 bottom left 
-// -8.165492562794787, 35.60888471651336 top right 
 
 // ##############################################################
 // --------------- PROVIENCE & DISTRICT LAYER -------------------
@@ -174,19 +165,26 @@ function customOptions(offsetArr) {
 
 const southern = L.geoJSON(southernProvinceData, {style : ProvinceStyle("#000000", 5), 
 onEachFeature : function(feature, layer) {
-  layer.bindTooltip(feature.properties.name, {className : "toolTipsRHC"});
+  layer.bindPopup(`<font style="font-size: 20px; text-decoration: underline">${feature.properties.name}:</font><br> Population : ${feature.properties.population}<br><a href="https://www.citypopulation.de/en/zambia/admin/" target="_blank">(Source)</a>`, {className : "toolTipsRHC"});
 }}); 
 
-const western = L.geoJson(westernProvinceData, {style : ProvinceStyle("#535353", 5), 
+const western = L.geoJson(westernProvinceData, {style : ProvinceStyle("#d7953e", 5), 
 onEachFeature : function(feature, layer) {
-  layer.bindTooltip(feature.properties.name, {className : "toolTipsRHC"});
+  layer.bindPopup(`<font style="font-size: 20px; position: relative">${feature.properties.name}</font><br> Population : ${feature.properties.population}</font><br><a href="https://www.citypopulation.de/en/zambia/admin/" target="_blank">(Source)</a>`, {className : "toolTipsRHC"});
 }}); 
 
-arrOfSouth = [southern];
-arrOfWest = [western]; 
+arrOfSouthern = [southern];
+arrOfWestern = [western]; 
 
-var southernProvinces = layerGroupMaker(arrOfSouth);
-var westernProvience = layerGroupMaker(arrOfWest); 
+var southernProvinces = layerGroupMaker(arrOfSouthern);
+var westernProvience = layerGroupMaker(arrOfWestern); 
+
+
+// ##############################################################
+// ----------------- ZAMBIA GEOJSON LAYER ----------------------
+// ##############################################################
+
+const zambiaOutline = L.geoJSON(zambiaGeoJson, {style : ProvinceStyle("#000000", 3)}).addTo(map); 
 
 // ##############################################################
 // ----------------- PROGRAM LAYER FUNCTIONS --------------------
@@ -221,10 +219,16 @@ function onEachDynamic(layer, name, dataObj, url) {
   if (dataArr.includes(name)) {
     if (typeof url === "string") {
       layer.on('click', function() {
-        window.open(url, "_self")
+        window.open(url)
       })
     }
-    const message = `<br><font id="values"> OCA began working here in ` + dataObj[name].toString();
+
+    var message = ""; 
+
+    if (name === "Zimba" || name === "Kazungula") {
+      message += `<br> OCA launched operations here in 2010 with mobile clinics <br>`
+    }
+    message += `<br><font id="values"> OCA began working on this project here in ` + dataObj[name].toString();
     return [name + message, {className : "toolTipsRHC", sticky : true, offset : L.point(75, 75), direction : 'right'}];
   }
   else {
@@ -385,34 +389,46 @@ digitalHealthLayer = layerGroupMaker(digitalHealthArr);
 // ------------------- PERMENANT MARKERS ------------------------
 // ##############################################################
 
-// Marker for OCA headquaters 
 
-var OCA_HQ_location = {
-  "type": "FeatureCollection",
-  "features": [ 
-    { "type": "Feature",
-      "properties": { name : "OCA Headquarters"},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          25.861478447914124,
-          -17.855036389209820
-        ]
-      }
-    }
-  ], 
-}
+const OCAMarker = L.marker([-17.855036389209820, 25.861478447914124], {icon : standardMapIcon}).bindPopup("<font class=OCAMarker>OCA Headquarters</font>", {'className' : "OCAMarker"}).addTo(map).openPopup(); 
 
-const OCAMarker = L.geoJSON(OCA_HQ_location, { pointToLayer: function(feature, latlng) {
-  return L.marker(latlng, {icon : standardMapIcon}); 
-} } ).bindPopup(`${OCA_HQ_location.features[0].properties.name}`, {'className' : "OCAMarker"}).addTo(map).openPopup(); 
-
+const OCAOfficeSesheke = L.marker([-17.474089, 24.299698], {icon : standardMapIcon}).bindPopup("<font class=OCAMarker>OCA Sesheke Office</font>", {'className' : "OCAMarker"}).addTo(map); 
 
 // ##############################################################
 // ------------- IMPORTANT OTHER FEATURES MARKERS ---------------
 // ##############################################################
 
 importantFeaturesArr = []; 
+
+intrestingPlaces = Object.keys(intrestingFeatures); 
+
+// This for loop plots all the intresting features given in the intresingFeatures
+// object in dataInput.js
+
+for (var k=0; k<intrestingPlaces.length; k++) {
+
+  let name = intrestingPlaces[k]; 
+
+  console.log("NAME: " + name);
+
+  let locationType = intrestingFeatures[name]['type']; 
+  let locationCurrent = intrestingFeatures[name]['location']; 
+
+  let currentIcon; 
+
+  if (locationType === "hospital") {
+    currentIcon = hospitalIcon;
+  } else if (locationType === "office") {
+    currentIcon = officeIcon;
+  } else if (locationType === "health") { 
+    currentIcon = healthFacalityIcon;
+  }
+
+  let currentMarker = L.marker(locationCurrent, {icon: currentIcon}).bindTooltip(`<font id=nameStyle>${name}</font>`)
+  importantFeaturesArr.push(currentMarker); 
+
+}
+
 
 // HOSPITALS 
 const livingstoneGeneral = L.marker([-17.84144894033052, 25.853454425537137], {icon : hospitalIcon}).bindTooltip("<font id=nameStyle>Livingstone General Hospital</font>"); 
@@ -445,10 +461,22 @@ iconsImagesIntrestingFeat = ["Icons/hospitalIcon.png", "Icons/healthOfficeIcon.p
 // --------------------- KEY CREATION ------------------------------
 // #################################################################
 
-function keyCreator(categories, iconsImages) { 
+function keyCreator(categories, iconsImages, type) {
+  
+  /* creates the div and fills it with the correct information to be made into a key
+  categories take an array of names, IconImages takes an array of icon image directories and type allows the div to be styles to a specific layer */ 
 
   var div = L.DomUtil.create('div', 'info-legend');
-  labels = ['<strong style="padding: 70px; font-weight: bolder; font-size: 20px; text-decoration: underline; ">Key</strong>']; 
+
+  console.log("Div for lengends");
+  console.log(div);
+
+  // moves key depending on position 
+  if (type === "Model Package" || type === "WASH") {
+    div.style['top'] = '30px';
+  }
+
+  labels = [`<strong style="padding-left: 20px; font-weight: bolder; font-size: 20px; text-decoration: underline; ">Key-</strong><font style="text-decoration: underline; padding-right:20px">${type}</font>`]; 
 
   for (var i = 0; i < categories.length; i++) {
 
@@ -462,21 +490,22 @@ function keyCreator(categories, iconsImages) {
 
 
 // Key for rural health facaility improvment program 
-var ruralHealthKey = L.control({position: 'bottomright'});
+var ruralHealthKey = L.control({position: 'topright'});
 
 ruralHealthKey.onAdd = function (map) {
-  return keyCreator(categoriesRHP, iconsImagesRHP); 
+  return keyCreator(categoriesRHP, iconsImagesRHP, 'Model Package'); 
 }
 
 // key for intresting features 
 var intrestingFeaturesKey = L.control({position: 'bottomleft'}); 
 intrestingFeaturesKey.onAdd = function(map) {
-  return keyCreator(categoriesIntrestingFeat, iconsImagesIntrestingFeat); 
+  return keyCreator(categoriesIntrestingFeat, iconsImagesIntrestingFeat, 'Intresting Features'); 
 }
 
-var WASHKey = L.control({position: 'bottomright'}); 
+// key for WASH
+var WASHKey = L.control({position: 'topright'}); 
 WASHKey.onAdd = function(map) {
-  return keyCreator(categoriesWASH, iconsImagesWASH); 
+  return keyCreator(categoriesWASH, iconsImagesWASH, 'WASH'); 
 }
 
 // #################################################################
@@ -515,8 +544,8 @@ const markersGrouped = [
     expanded : true, 
     exclusive : false, 
     layers : {
-      "Model Package for HF" : healthFacalityLayer,
-      "WASH In HF" : washLayer,
+      "Model Packages for Health Facilities" : healthFacalityLayer,
+      "WASH In Health Facilities" : washLayer,
       "Digital Health" : digitalHealthLayer, 
     }
   }
@@ -535,33 +564,55 @@ const options = {
 lcontrol = L.control.groupedLayers(baseMaps, markersGrouped, options).addTo(map);
 
 
-// dynamic selection of layers 
+// #################################################################
+// ------------------- DYNAMIC LAYER CONTROL------------------------
+// #################################################################
 
 map.on('overlayadd', function (eventLayer) {
 
   let currentLayer = eventLayer.name; 
   
 
-  if (currentLayer === "Model Package for HF") {
+  if (currentLayer === "Model Packages for Health Facilities") {
     ruralHealthKey.addTo(map);
     map.removeControl(WASHKey);
     console.log("Removing Layers")
     setTimeout(() => { 
       map.removeLayer(washLayer); 
-      map.removeLayer(digitalHealthLayer) }, 10);
+      map.removeLayer(digitalHealthLayer)
+      map.removeLayer(southernProvinces)
+      map.removeLayer(westernProvience) }, 10);
 
-  } else if (currentLayer === "WASH In HF") {
+  } else if (currentLayer === "WASH In Health Facilities") {
     map.removeControl(ruralHealthKey);
     WASHKey.addTo(map); 
     setTimeout(() => { 
       map.removeLayer(healthFacalityLayer); 
-      map.removeLayer(digitalHealthLayer) }, 10); 
+      map.removeLayer(digitalHealthLayer)
+      map.removeLayer(southernProvinces)
+      map.removeLayer(westernProvience) }, 10); 
   } else if (currentLayer === "Digital Health") {
     map.removeControl(ruralHealthKey); 
     map.removeControl(WASHKey);
     setTimeout(() => { 
       map.removeLayer(healthFacalityLayer); 
-      map.removeLayer(washLayer) }, 10); 
+      map.removeLayer(washLayer)
+      map.removeLayer(southernProvinces)
+      map.removeLayer(westernProvience) }, 10); 
+  } else if (currentLayer === "Southern") {
+    map.removeControl(ruralHealthKey); 
+    map.removeControl(WASHKey);
+    setTimeout(() => { 
+      map.removeLayer(healthFacalityLayer); 
+      map.removeLayer(washLayer)
+      map.removeLayer(digitalHealthLayer) }, 10); 
+  } else if (currentLayer === "Western") {
+    map.removeControl(ruralHealthKey); 
+    map.removeControl(WASHKey);
+    setTimeout(() => { 
+      map.removeLayer(healthFacalityLayer); 
+      map.removeLayer(washLayer)
+      map.removeLayer(digitalHealthLayer) }, 10); 
   }
   else if (currentLayer === "Intresting Features") {
     setTimeout(() => {
@@ -573,7 +624,7 @@ map.on('overlayadd', function (eventLayer) {
 
 map.on('overlayremove', function(eventLayer) { 
   
-  if (eventLayer.name === "Model Package for HF") {
+  if (eventLayer.name === "Model Packages for Health Facilities") {
     setTimeout(() => {
       map.removeControl(ruralHealthKey);
     }, 10); 
@@ -583,7 +634,7 @@ map.on('overlayremove', function(eventLayer) {
       map.removeControl(intrestingFeaturesKey); 
     }, 10); 
   }
-  else if (eventLayer.name === "WASH In HF") {
+  else if (eventLayer.name === "WASH In Health Facilities") {
     setTimeout(() => {
       map.removeControl(WASHKey); 
     }, 10);  
@@ -596,7 +647,7 @@ map.on('zoomend', function() {
   let currentZoom = map.getZoom();
   console.log("CURRENT ZOOM"); 
   console.log(currentZoom)
-  if (currentZoom > 10) {
+  if (currentZoom > 9) {
     healthFacalityLayer.addLayer(healthFacalityPointsLayer)
   }
   else if (currentZoom <= 10) {
@@ -608,6 +659,12 @@ map.on('zoomend', function() {
   }
   else if (currentZoom <= 7) {
     washLayer.removeLayer(washPointsLayer); 
+
+    // change southern layer 
+    //southernProvinces.removeLayer(arrOfSouthTooltips)
+
+    // chaneg western layer
+    //westernProvience.removeLayer(arrOfWestTooltips)
   }
 })
 
@@ -705,24 +762,48 @@ for (var i=0; i<lengthOfKeys; i++) {
 
 }
 
+var buttonsTest = firstButtons(); 
 
 $('#firstbuttons').dialog({
     autoOpen: false,
     modal: true,
     zIndex: 10000,
     width: 700,
-    buttons: firstButtons()
+    buttons: buttonsTest
 });
 
+
+
+// #################################################################
+// -------------------- INSTRUCTIONS BUTTON -----------------------
+// #################################################################
+
+$('#instructionsButtonContent').dialog({
+  autoOpen: false,
+  modal: true,
+  zIndex: 100000,
+  width: 800,
+  buttons: [{ 
+    id : 'okaybutton', 
+    text : "Okay", 
+    click : function() { 
+      $(this).dialog('close') } 
+    }] 
+});
 
 $( document ).ready(function() {
 
   $('#deffButton').click(function() {
+    $(".ui-dialog-content").dialog("close");
     $('#firstbuttons').dialog("open");
+  })
+
+  $('#instructionsButton').click(function() {
+    $(".ui-dialog-content").dialog("close");
+    $('#instructionsButtonContent').dialog("open");
   })
   
 });
-
 
 
 

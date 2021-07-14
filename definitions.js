@@ -1,3 +1,5 @@
+/* This contains all the names of the definitions and the definitions themselves for the definitions button */ 
+
 defintions = {
     RHP : {
       fullName : "Rural Health Post", 

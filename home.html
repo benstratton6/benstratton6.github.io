@@ -20,6 +20,9 @@
     <script src = "finalProvinces/southernProvince.js"></script>
     <script src = "finalProvinces/westernProvinceFinal.js"></script>
 
+    <!-- Zambia Data -->
+    <script src = "finalProvinces/ZambiaGeoJson.js"></script>
+
     <!-- Data Input -->
     <script src = "dataInput.js"></script>
 
@@ -30,10 +33,6 @@
     <link href='https://fonts.googleapis.com/css?family=Spartan' rel='stylesheet'>
 
     <!-- JQUERY --> 
-    <!-- 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script> --> 
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
@@ -52,7 +51,7 @@
         padding: 0;
       }
 
-      #map {position: absolute; width: 1200px; height: 600px;}
+      #map {position: absolute; width: 1500px; height: 600px;}
 
       #image {position: center; height: 40px; width: 40px}
 
@@ -98,6 +97,11 @@
         font-family: 'Spartan';
         font-size: 15px;
         font-weight: bolder;
+        padding: 25px, 25px, 25px, 25px;
+      }
+
+      .OCAMarker .leaflet-popup-content {
+        width: 180px; 
       }
 
       .OCAMarker .leaflet-popup-content-wrapper, .leaflet-popup-tip {
@@ -183,14 +187,14 @@
         
       }
 
-      /* styles the definitions button at the top of the map */ 
+      /* styles the definitions button and the instructions button at the top of the map */ 
 
       #deffButton {
         position: relative;
         font-family : "Spartan"; 
         /*background: rgba(255, 255, 255, 0.7); */
         font-size: 20px;
-        top: 90px;
+        top: 160px;
         left: 0px;
         padding: 15px;
         z-index: 10000;
@@ -202,6 +206,28 @@
       #deffButton:hover {
         position: relative;
         background-color: rgba(92, 150, 172, 1);
+        color: white;
+      }
+
+      #instructionsButton {
+        position: relative;
+        font-family : "Spartan"; 
+        /*background: rgba(255, 255, 255, 0.7); */
+        font-size: 20px;
+        top: 90px;
+        left: -146px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-left: 22px;
+        padding-right: 22px;
+        z-index: 10000;
+        border: 2px solid rgba(63, 99, 97, 1);
+        border-radius: 5px;
+      }
+
+      #instructionsButton:hover {
+        position: relative;
+        background-color: rgba(63, 99, 97, 1);
         color: white;
       }
 
@@ -318,14 +344,18 @@
 
     <div id='wrapper'>
       <div id="map">
-        <button id='deffButton'>Definitions</button>
+        <button class='buttons' id='deffButton'>Definitions</button>
+        <button class='buttons' id='instructionsButton'>Read Me</button>
         <div id='firstbuttons'><font style="font-size:40px; font-weight:bolder; text-decoration: underline;">Definitions</font></div>
+        <div id='instructionsButtonContent'><strong>Welcome to the On Call Africa Interactive Map </strong> <br><br>
+        <font style='font-size:17px'>This map shows the districts within the Southern and Western provinces of Zambia in which On Call Africa is currently active. Under the programs section you will find the 3 different projects 
+          we are either coordinating or partnering in. Zoom in on the highlighted districts to find out more details about individual health centres within them that we are working with. <br><br> 
+        Use the intresting features tab to discover more health realted infastructive in our area; the provinces tab to view Western and Southern provinces individually and find out the populations of their districts; and use the base maps tab to swap between street view and satellite view. <br><br>
+        This map was made with assistance from the team at <a href="https://www.gis-e.org/" target="_blank"> GIS-E</a>.
+      </font>
+      </div>
       </div>
     </div>
-    
-
-    <!-- <p><a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a></p> -->
-  
     
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>

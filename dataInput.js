@@ -27,23 +27,23 @@ digitalHealthURL = null;
 KanyangaStatsData = {
     "Kanyanga RHP" : {
         "Population" : 24695, 
-        "No' Nurses" : 2,
+        "No Nurses" : 2,
         "No COs" : 1,
         "No CHA" : 1, 
         "No EHT" : 1,
         "No beds" : 5,
         "Solar Power" : "Yes (very limited)", 
         "Running Water" : "No", 
+        "Nearest Water Source" : "Borehole (435m)", 
         "Most Common Illnesses" : "URTI, Diarrhoea, Musculoskeletal, Digestive illness, Dental", 
     },
     "Siakasipa" : {
-        "No CHWs" : 10
+        "No CHWs" : 10,
+        "Nearest Water Source" : "Borehole - nearly dry(174m) <br> River (974m)"
     },
     "Simulelabana" : {
-        "No CHWs" : 7
-    },
-    "Mazanzya" :  {
-        "No CHWs" : 10
+        "No CHWs" : 7,
+        "Nearest Water Source" : "Borehole (486m)"
     },
     "Simusunge"  : {
         "No CHWs" : 10
@@ -52,25 +52,35 @@ KanyangaStatsData = {
         "No CHWs" : 10
     },
     "Matabele"  : {
-        "No CHWs" : 10
+        "No CHWs" : 10,
+        "Nearest Water Source" : "River (644m)"
     },
     "Safari"  : {
-        "No CHWs" : 10
+        "No CHWs" : 10,
+        "Nearest Water Source" : "Borehole (1.4km)"
     },
     "Chilikwazi"  : {
-        "No CHWs" : 10
+        "No CHWs" : 10,
+        "Nearest Water Source" : "River (544m)"
     },
     "Masanzya"  : {
-        "No CHWs" : 10
+        "No CHWs" : 10,
+        "Nearest Water Source" : "Borehole (392m)"
     },
     "Masite"  : {
-        "No CHWs" : 7
+        "No CHWs" : 7, 
+        "Nearest Water Source" : "Dam (859m)"
     },
     "Nkungwa" : {
-        "No CHWs" : 4
+        "No CHWs" : 4,
+        "Nearest Water Source" : "Borehole - nearly dry (69m) <br> River (662m)"
     }, 
     "Siejumba" : {
-        "No CHWs" : 5
+        "No CHWs" : 5,
+        "Nearest Water Source" : "Borehole (5m)"
+    },
+    "NG'andu" : {
+        "Nearest Water Source" : "River (577m)"
     }
 }
 
